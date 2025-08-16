@@ -1,0 +1,115 @@
+classDiagram
+    class User {
+        +id
+        +email
+        +password
+        +role
+        +isActive
+        +createdAt
+    }
+
+    class Admin {
+        +id
+        +email
+        +password
+        +name
+        +permissions
+        +isActive
+    }
+
+    class Family {
+        +familyCode
+        +region
+        +priorityLevel
+        +verificationStatus
+        +isActive
+        -realName
+        -exactLocation
+        -story
+        -verifiedBy
+        -verifiedAt
+    }
+
+    class SecureFamilyData {
+        +id
+        +realName
+        +exactLocation
+        +story
+        +verifiedBy
+        +verifiedAt
+        +encryptedData
+    }
+
+    class Donor {
+        +id
+        +name
+        +country
+        +preferredRegions
+        +joinedAt
+        +favoriteFamilies
+    }
+
+   
+
+    class FamilyNeed {
+        +id
+        +category
+        +title
+        +description
+        +estimatedCost
+        +priority
+        +isFulfilled
+    }
+
+    class FamilyDocument {
+        +id
+        +documentType
+        +fileName
+        +filePath
+        +isVerified
+        +verifiedBy
+        +verifiedAt
+    }
+
+    class ExternalDonation {
+        +id
+        +platform
+        +externalLink
+        +donorName
+        +amount
+        +currency
+        +donationDate
+        +isVerified
+    }
+
+    class FamilyUpdate {
+        +id
+        +title
+        +description
+        +updateType
+        +photos
+        +videos
+        +isPublic
+        +createdAt
+    }
+
+    
+
+    User <|-- Family
+    User <|-- Donor
+    
+     Family "1" --> "1" SecureFamilyData : mapsTo
+    Family "1" o-- "many" FamilyNeed : contains
+    Family "1" o-- "many" FamilyDocument : uploads
+    Family "1" o-- "many" ExternalDonation : receivesFrom
+    
+    
+    
+    Donor "1" o-- "many" ExternalDonation : makes
+    Donor "1" --> "many" FamilyNeed : checks
+    
+    
+    Admin "1" o-- "many" Family : verifies
+    Admin "1" o-- "many" FamilyDocument : approves
+    Admin "1" o-- "many" FamilyUpdate : posts
+    Admin "1" --> "many" SecureFamilyData : decrypts

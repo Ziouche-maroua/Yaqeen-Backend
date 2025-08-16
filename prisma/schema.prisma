@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  donors    Donor[]
+  families  Family[]
+
+  @@map("users")
+}
+
+model Admin {
+  id                String             @id @default(cuid())
+  email             String             @unique
+  password          String
+  name              String
+  permissions       String[]
+  isActive          Boolean            @default(true)
+  verifiedFamilies  Family[]
+  approvedDocuments FamilyDocument[]
+  postedUpdates     FamilyUpdate[]
+  decryptedData     SecureFamilyData[]
+
+  @@map("admins")
+}
+
+model Family {
+  familyCode         String             @id
+  region             String
+  priorityLevel      String
+  verificationStatus String
+  isActive           Boolean            @default(true)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  userId             String
+  verifiedByAdminId  String?
+  externalDonations  ExternalDonation[]
+  user               User               @relation(fields: [userId], references: [id])
+  verifiedByAdmin    Admin?             @relation(fields: [verifiedByAdminId], references: [id])
+  documents          FamilyDocument[]
+  needs              FamilyNeed[]
+  secureData         SecureFamilyData?
+
+  @@map("families")
+}
+
+model SecureFamilyData {
+  id                 String    @id @default(cuid())
+  realName           String
+  exactLocation      String
+  story              String
+  verifiedBy         String?
+  verifiedAt         DateTime?
+  encryptedData      String
+  familyCode         String    @unique
+  decryptedByAdminId String?
+  decryptedByAdmin   Admin?    @relation(fields: [decryptedByAdminId], references: [id])
+  family             Family    @relation(fields: [familyCode], references: [familyCode])
+
+  @@map("secure_family_data")
+}
+
+model Donor {
+  id               String             @id @default(cuid())
+  name             String
+  country          String
+  preferredRegions String[]
+  joinedAt         DateTime           @default(now())
+  favoriteFamilies String[]
+  userId           String
+  user             User               @relation(fields: [userId], references: [id])
+  donations        ExternalDonation[]
+  checkedNeeds     FamilyNeed[]
+
+  @@map("donors")
+}
+
+model FamilyNeed {
+  id               String   @id @default(cuid())
+  category         String
+  title            String
+  description      String
+  estimatedCost    Float?
+  priority         String
+  isFulfilled      Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  familyCode       String
+  checkedByDonorId String?
+  checkedByDonor   Donor?   @relation(fields: [checkedByDonorId], references: [id])
+  family           Family   @relation(fields: [familyCode], references: [familyCode])
+
+  @@map("family_needs")
+}
+
+model FamilyDocument {
+  id                String    @id @default(cuid())
+  documentType      String
+  fileName          String
+  filePath          String
+  isVerified        Boolean   @default(false)
+  verifiedBy        String?
+  verifiedAt        DateTime?
+  uploadedAt        DateTime  @default(now())
+  familyCode        String
+  approvedByAdminId String?
+  approvedByAdmin   Admin?    @relation(fields: [approvedByAdminId], references: [id])
+  family            Family    @relation(fields: [familyCode], references: [familyCode])
+
+  @@map("family_documents")
+}
+
+model ExternalDonation {
+  id           String   @id @default(cuid())
+  platform     String
+  externalLink String?
+  donorName    String
+  amount       Float
+  currency     String   @default("USD")
+  donationDate DateTime
+  isVerified   Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  familyCode   String
+  donorId      String?
+  donor        Donor?   @relation(fields: [donorId], references: [id])
+  family       Family   @relation(fields: [familyCode], references: [familyCode])
+
+  @@map("external_donations")
+}
+
+model FamilyUpdate {
+  id              String   @id @default(cuid())
+  title           String
+  description     String
+  updateType      String
+  photos          String[]
+  videos          String[]
+  isPublic        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  postedByAdminId String
+  postedByAdmin   Admin    @relation(fields: [postedByAdminId], references: [id])
+
+  @@map("family_updates")
+}
