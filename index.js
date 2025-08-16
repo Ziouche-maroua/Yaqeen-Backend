@@ -1,3 +1,4 @@
+// index.js
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -102,14 +103,7 @@ app.use((error, req, res, next) => {
   });
 });
 
-// Simple 404 handler - no wildcard
-app.use((req, res) => {
-  res.status(404).json({ 
-    error: 'Route not found',
-    path: req.path,
-    method: req.method
-  });
-});
+
 
 // Graceful shutdown
 process.on('SIGINT', async () => {
@@ -122,7 +116,6 @@ app.listen(PORT, () => {
   console.log(`🚀 Yaqeen API Server running on port ${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
   console.log(`📈 Stats: http://localhost:${PORT}/api/stats`);
-  console.log(`🔐 Auth: http://localhost:${PORT}/api/auth`);
 });
 
 module.exports = app;
