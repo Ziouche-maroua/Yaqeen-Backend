@@ -5,14 +5,14 @@ The backend powers secure APIs, data management, and statistics to ensure transp
 
 ---
 
-## 🌍 Project Vision
+##  Project Vision
 - Provide a **trusted bridge** between families in need and donors worldwide.  
 - Ensure **transparency** through verified requests and updates.  
 - Transform **humanitarian support** into measurable data and lasting impact.  
 
 ---
 
-## ✨ Features
+##  Features
 - **Family Requests**: families submit their needs with documents, photos, and updates.  
 - **Donor Access**: donors browse verified requests and support families directly.  
 - **Analytics & Dashboards**: live statistics about needs, locations, and support progress.  
@@ -20,7 +20,7 @@ The backend powers secure APIs, data management, and statistics to ensure transp
 
 ---
 
-## 🏗️ Tech Overview
+##  Tech Overview
 - **Node.js + Express** for the backend API  
 - **PostgreSQL** as the database  
 - Basic **authentication and security** measures applied  
@@ -29,7 +29,7 @@ The backend powers secure APIs, data management, and statistics to ensure transp
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 1. Clone the repository.  
 2. Set up your environment variables (see `.env.example`).  
 3. Install dependencies.  
